@@ -1,0 +1,6 @@
+c:\users\acer\onedrive\документы\visual studio 2010\Projects\Yippy\Yippy\bin\Debug\Yippy.exe
+c:\users\acer\onedrive\документы\visual studio 2010\Projects\Yippy\Yippy\bin\Debug\Yippy.pdb
+c:\users\acer\onedrive\документы\visual studio 2010\Projects\Yippy\Yippy\obj\x86\Debug\Yippy.exe
+c:\users\acer\onedrive\документы\visual studio 2010\Projects\Yippy\Yippy\obj\x86\Debug\Yippy.pdb
+C:\Users\Acer\onedrive\документы\visual studio 2010\Projects\Yippy\Yippy\obj\x86\Debug\Yippy.csprojResolveAssemblyReference.cache
+C:\Users\Acer\onedrive\документы\visual studio 2010\Projects\Yippy\Yippy\bin\Debug\test.yp

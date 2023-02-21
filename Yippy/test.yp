@@ -1,0 +1,2 @@
+﻿@attach System;
+log("Hello, World!\n");
