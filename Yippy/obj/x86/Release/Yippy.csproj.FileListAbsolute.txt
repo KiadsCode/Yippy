@@ -3,3 +3,6 @@ C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yipp
 C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\bin\Release\Yippy.pdb
 C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\obj\x86\Release\Yippy.exe
 C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\obj\x86\Release\Yippy.pdb
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\bin\Release\yippy_api.dll
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\bin\Release\yippy_api.pdb
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\obj\x86\Release\Yippy.csprojResolveAssemblyReference.cache

@@ -1,6 +1,7 @@
 ﻿using System;
+using Yippy;
 
-namespace Yippy
+namespace YippyTest
 {
     class Program
     {

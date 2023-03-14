@@ -243,7 +243,7 @@ namespace Yippy
                 ParseUserVoidCall(dataB);
             }
         }
-        internal void ParseVoidWithOneArgument(string data, string voidName, Action<string> action)
+        public void ParseVoidWithOneArgument(string data, string voidName, Action<string> action)
         {
             string requiredToken = voidName;
             string parsedToken = string.Empty;
@@ -273,7 +273,7 @@ namespace Yippy
             }
             action.Invoke(parsedArgument);
         }
-        internal void ParseVoidWithArguments(string data, string voidName, Action<string[]> action)
+        public void ParseVoidWithArguments(string data, string voidName, Action<string[]> action)
         {
             string requiredToken = voidName;
             string parsedToken = string.Empty;
@@ -312,7 +312,7 @@ namespace Yippy
             }
             action.Invoke(parsedArguments.ToArray());
         }
-        internal void ParseVoidWithThreeArguments(string data, string voidName, Action<string, string, string> action)
+        public void ParseVoidWithThreeArguments(string data, string voidName, Action<string, string, string> action)
         {
             string requiredToken = voidName;
             string parsedToken = string.Empty;
@@ -366,7 +366,7 @@ namespace Yippy
             }
             action.Invoke(parsedArgumentA, parsedArgumentB, parsedArgumentC);
         }
-        internal void ParseVoidWithTwoArguments(string data, string voidName, Action<string, string> action)
+        public void ParseVoidWithTwoArguments(string data, string voidName, Action<string, string> action)
         {
             string requiredToken = voidName;
             string parsedToken = string.Empty;

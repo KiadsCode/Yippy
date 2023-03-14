@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yippy", "Yippy\Yippy.csproj", "{C412E342-39F4-4598-AFA3-E8EA1DAEDEDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yippy_api", "yippy_api\yippy_api.csproj", "{447EE7B5-9D04-4243-885D-A44CC9B4B639}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,16 @@ Global
 		{C412E342-39F4-4598-AFA3-E8EA1DAEDEDE}.Release|Mixed Platforms.Build.0 = Release|x86
 		{C412E342-39F4-4598-AFA3-E8EA1DAEDEDE}.Release|x86.ActiveCfg = Release|x86
 		{C412E342-39F4-4598-AFA3-E8EA1DAEDEDE}.Release|x86.Build.0 = Release|x86
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{447EE7B5-9D04-4243-885D-A44CC9B4B639}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

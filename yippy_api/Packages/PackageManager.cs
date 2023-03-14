@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Yippy.Packages;
 
-namespace Yippy
+namespace Yippy.Packages
 {
     public struct PackageManager : IDisposable
     {
         private Dictionary<string, Package> _packages;
-        private Dictionary<string, Packages.Package> _availablePackages;
+        private Dictionary<string, Package> _availablePackages;
         private Compiler _compiler;
         private bool _disposed;
 
@@ -19,14 +16,14 @@ namespace Yippy
         }
         public void Update()
         {
-            foreach (Packages.Package item in _packages.Values)
+            foreach (Package item in _packages.Values)
                 item.Compiler = _compiler;
         }
 
         public PackageManager(Compiler compiler)
         {
-            _packages = new Dictionary<string, Packages.Package>();
-            _availablePackages = new Dictionary<string, Packages.Package>();
+            _packages = new Dictionary<string, Package>();
+            _availablePackages = new Dictionary<string, Package>();
             _compiler = compiler;
             _disposed = false;
         }
@@ -36,7 +33,7 @@ namespace Yippy
             if (_disposed == false)
             {
                 Update();
-                foreach (Packages.Package item in _packages.Values)
+                foreach (Package item in _packages.Values)
                     item.ParseMethods(data);
             }
         }

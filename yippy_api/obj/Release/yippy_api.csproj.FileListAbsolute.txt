@@ -1,0 +1,4 @@
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\yippy_api\bin\Release\yippy_api.dll
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\yippy_api\bin\Release\yippy_api.pdb
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\yippy_api\obj\Release\yippy_api.dll
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\yippy_api\obj\Release\yippy_api.pdb
