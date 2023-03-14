@@ -111,5 +111,13 @@ namespace Yippy
                 _disposed = true;
             }
         }
+
+        internal void AddCustomPackage(string packageName, Package package)
+        {
+            if (_availablePackages.ContainsKey(packageName) == false)
+                _availablePackages.Add(packageName, package);
+            else
+                _compiler.ThrowException("Same package already added to compiler", "PackageManager");
+        }
     }
 }

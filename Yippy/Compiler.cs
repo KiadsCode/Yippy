@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Yippy.Packages;
 
 namespace Yippy
 {
@@ -84,7 +85,12 @@ namespace Yippy
             }
         }
 
-        public string[] FileText
+        public void AddCustomPackage(string packageName, Package package)
+        {
+            _packageManager.AddCustomPackage(packageName, package);
+        }
+
+        public string[] FileData
         {
             get
             {

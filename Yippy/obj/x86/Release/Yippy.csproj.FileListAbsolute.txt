@@ -1,0 +1,5 @@
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\bin\Release\test.yp
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\bin\Release\Yippy.exe
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\bin\Release\Yippy.pdb
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\obj\x86\Release\Yippy.exe
+C:\Users\Acer\OneDrive\Документы\Visual Studio 2010\Projects\Yippy\Yippy\obj\x86\Release\Yippy.pdb
