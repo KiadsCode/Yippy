@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Yippy
 {
-	public class Compiler
+    public class Compiler
     {
         public Dictionary<string, Field> Fields
         {
@@ -29,75 +29,131 @@ namespace Yippy
             Divide = 3,
             Multiply = 4
         }
-        private static Dictionary<string, Libs.Library> _libraries;
+
+        #region SyntaxConstants
+
         public const string YIPPY_TRUE = "true";
         public const string YIPPY_FALSE = "false";
-		public const string YIPPY_POOL = "pool";
-		public const string YIPPY_SET = "set";
-		public const string YIPPY_INT = "int";
-		public const string YIPPY_STRING = "string";
-		public const string YIPPY_BOOL = "bool";
+        public const string YIPPY_POOL = "pool";
+        public const string YIPPY_CONST = "const";
+        public const string YIPPY_SET = "set";
+        public const string YIPPY_INT = "int";
+        public const string YIPPY_STRING = "string";
+        public const string YIPPY_BOOL = "bool";
         public const string YIPPY_ATTACH = "@attach";
+        public const string YIPPY_VOID = "void";
 
-		public const int ParsePriorityMax = 15;
+        public const int ParsePriorityMax = 15;
 
-		private int _parsePriority = 0;
-		private bool _compilingComplete = false;
-		private Dictionary<string, Field> _scriptFields;
-		private List<string> _scriptStrings;
-		private int _parserLine = 0;
-        private Dictionary<string, Libs.Library> _availableLibs = new Dictionary<string, Libs.Library>();
+        #endregion
 
-		public Compiler()
-		{
-			_scriptStrings = new List<string>();
-			_scriptFields = new Dictionary<string, Field>();
-            _libraries = new Dictionary<string, Libs.Library>();
-            DefaultLibrariesInitialize();
-		}
+        private int _parsePriority = 0;
+        private bool _compilingComplete = false;
+        private PackageManager _packageManager;
+        private Dictionary<string, Field> _scriptFields;
+        private Dictionary<string, Method> _scriptMethods;
+        private List<string> _scriptStrings;
+        private int _parserLine = 0;
+        private bool _inMethodBrackets;
 
-        private void DefaultLibrariesInitialize()
+        public Compiler()
         {
-            _availableLibs.Add("System", new Libs.System(this));
+            _scriptStrings = new List<string>();
+            _scriptFields = new Dictionary<string, Field>();
+            _scriptMethods = new Dictionary<string, Method>();
+            _packageManager = new PackageManager(this);
         }
-		public void Compile(string fileName)
-		{
-			if (File.Exists(fileName + FileExtension))
-			{
-				Console.CursorVisible = false;
-				using (StreamReader stream = new StreamReader(fileName + FileExtension))
-				{
-					while (stream.EndOfStream == false)
-					{
-						string lineString = stream.ReadLine();
-						if (!CompilerUtil.IsStringIncorrect(lineString))
-							_scriptStrings.Add(lineString);
-					}
-					stream.Close();
-				}
-				_compilingComplete = false;
-				Parse();
-			}
-		}
+        public void Compile(string fileName)
+        {
+            if (File.Exists(fileName + FileExtension))
+            {
+                Console.CursorVisible = false;
+                using (StreamReader stream = new StreamReader(fileName + FileExtension))
+                {
+                    while (stream.EndOfStream == false)
+                    {
+                        string lineString = stream.ReadLine();
+                        if (!CompilerUtil.IsStringIncorrect(lineString))
+                            _scriptStrings.Add(CompilerUtil.RemoveTabs(lineString));
+                    }
+                    stream.Close();
+                }
+                _compilingComplete = false;
+                _packageManager.Initialize();
+                Parse();
+            }
+        }
 
-		public void ThrowException(string msg = "compiler has occured an error", string errorType = "Compiler Exception")
-		{
-			DateTime date = DateTime.Now;
-			Console.ForegroundColor = ConsoleColor.Red;
+        public string[] FileText
+        {
+            get
+            {
+                return _scriptStrings.ToArray();
+            }
+        }
 
-			Console.WriteLine(string.Format("\nTime({0}:{1}:{2})\nLine: {3}\nError - {4}: {5}", new object[]
-			{
-				date.Hour,
-				date.Minute,
-				date.Second,
-				_parserLine + 1,
-				errorType,
-				msg
-			}));
+        private void ParseVoidHeader(string data)
+        {
+            string parsedToken = string.Empty;
+            string parsedName = string.Empty;
+            int startLine = -440;
+            int endLine = -441;
+            for (int i = 0; data[i] != ' ' && i + 1 < data.Length; i++)
+                if (parsedToken != YIPPY_VOID)
+                    parsedToken += data[i];
+            if (parsedToken != YIPPY_VOID)
+                return;
+            for (int i = parsedToken.Length; i < data.Length; i++)
+                if (data[i] != ' ' && data[i] != '(' && data[i] != ')')
+                    parsedName += data[i];
+            if (CompilerUtil.IsStringIncorrect(parsedName))
+            {
+                ThrowException("Invalid function name");
+                return;
+            }
+            int currentLine = _parserLine;
+            for (int i = currentLine + 1; i < _scriptStrings.Count; i++)
+                if (_scriptStrings[i] == "{")
+                {
+                    startLine = i;
+                    break;
+                }
+            for (int i = startLine + 1; i < _scriptStrings.Count; i++)
+                if (_scriptStrings[i] == "}")
+                {
+                    endLine = i;
+                    break;
+                }
 
-			Console.ForegroundColor = ConsoleColor.Gray;
+            if (startLine == -440 && endLine == -441)
+            {
+                ThrowException("Function brackets not founded");
+                return;
+            }
+
+            Method method = new Method(parsedName, startLine, endLine);
+            _scriptMethods.Add(parsedName, method);
+            _parserLine = endLine;
+        }
+
+        public void ThrowException(string msg = "Compiler has occured an error", string errorType = "Compiler Exception")
+        {
+            DateTime date = DateTime.Now;
+            Console.ForegroundColor = ConsoleColor.Red;
+
+            Console.WriteLine(string.Format("\nTime({0}:{1}:{2})\nLine: {3}\nError - {4}: {5}", new object[]
+            {
+                date.Hour,
+                date.Minute,
+                date.Second,
+                _parserLine + 1,
+                errorType,
+                msg
+            }));
+
+            Console.ForegroundColor = ConsoleColor.Gray;
             Stop();
-		}
+        }
 
         private void Parse()
         {
@@ -106,22 +162,35 @@ namespace Yippy
                 while (_compilingComplete == false)
                 {
                     string data = _scriptStrings[_parserLine];
-                    UpdateLibraries();
+                    if (data == "{")
+                        _inMethodBrackets = true;
+                    if (data == "}")
+                        _inMethodBrackets = false;
+                    UpdatePackageManager();
                     switch (_parsePriority)
                     {
                         case 0:
-                            ParseAttach(data);
+                            if (!_inMethodBrackets)
+                                ParseAttach(data);
                             break;
                         case 1:
-                            ParseVariables(data);
+                            if (!_inMethodBrackets)
+                                ParseVariables(data);
                             break;
                         case 2:
-                            ParseVariablesSet(data);
+                            ParseVoidHeader(data);
                             break;
                         case 3:
-                            UpdateLibraries();
-                            foreach (Libs.Library item in _libraries.Values)
-                                item.ParseMethods(data);
+                            if (!_inMethodBrackets)
+                                ParseVariablesSet(data);
+                            break;
+                        case 4:
+                            if (!_inMethodBrackets && _packageManager.Disposed == false)
+                                _packageManager.ParsePackages(data);
+                            break;
+                        case 5:
+                            if (!_inMethodBrackets)
+                                ParseUserVoidCall(data);
                             break;
                         default:
                             break;
@@ -134,30 +203,39 @@ namespace Yippy
             }
         }
 
-        private void UpdateLibraries()
+        private void UpdatePackageManager()
         {
-            foreach (Libs.Library item in _libraries.Values)
-                item.Compiler = this;
-        }
-        private void AddLibrary(string name)
-        {
-            if (!_availableLibs.ContainsKey(name))
-            {
-                ThrowException("No libs with \"" + name + "\" name founded");
-                return;
-            }
-            if (_libraries.ContainsKey(name))
-            {
-                ThrowException("Library already attached");
-                return;
-            }
-            Libs.Library outlib;
-            _availableLibs.TryGetValue(name, out outlib);
-            _libraries.Add(name, outlib);
-            UpdateLibraries();
-            outlib.Initialize();
+            _packageManager.UpdateCompiler(this);
+            _packageManager.Update();
         }
 
+        internal void ParseUserVoidCall(string data)
+        {
+            string parsedToken = string.Empty;
+            bool containsBrick = false;
+
+            for (int i = 0; i < data.Length; i++)
+                if (data[i] == '(')
+                    containsBrick = true;
+            if (containsBrick == false)
+                return;
+
+            for (int i = 0; data[i] != '('; i++)
+                parsedToken += data[i];
+            if (CompilerUtil.IsStringIncorrect(parsedToken))
+                return;
+            if (!_scriptMethods.ContainsKey(parsedToken))
+                return;
+            Method method = GetMethod(parsedToken);
+            for (int methodParserLine = method.StartPoint + 1; methodParserLine < method.EndPoint; methodParserLine++)
+            {
+                string dataB = _scriptStrings[methodParserLine];
+
+                ParseVariablesSet(dataB);
+                _packageManager.ParsePackages(dataB);
+                ParseUserVoidCall(dataB);
+            }
+        }
         internal void ParseVoidWithOneArgument(string data, string voidName, Action<string> action)
         {
             string requiredToken = voidName;
@@ -362,12 +440,14 @@ namespace Yippy
                 FieldNotExistExceptionThrow(parsedName);
                 return;
             }
+
             try
             {
                 for (int i = parsedToken.Length + parsedName.Length + 2; data[i] != ' '; i++)
                     if (data[i] != ' ')
                         parsedExpression += data[i];
-            } catch (IndexOutOfRangeException)
+            }
+            catch (IndexOutOfRangeException)
             {
                 InvalidTokenThrow();
                 return;
@@ -484,7 +564,8 @@ namespace Yippy
                         InvalidExpressionThrow();
                         return;
                 }
-            } else
+            }
+            else
             {
                 bool isFormatedToString = false;
                 string formatedValue = string.Empty;
@@ -537,25 +618,25 @@ namespace Yippy
             ThrowException("Different field type", "Invalid Type Casting");
         }
 
-		private void FieldNotExistExceptionThrow(string value)
-		{
-			ThrowException(string.Format("Field \"{0}\" is not exist", value));
-		}
+        private void FieldNotExistExceptionThrow(string value)
+        {
+            ThrowException(string.Format("Field \"{0}\" is not exist", value));
+        }
 
-		private void InvalidFieldNameThrow()
-		{
-			ThrowException("Field name invalid");
-		}
+        private void InvalidFieldNameThrow()
+        {
+            ThrowException("Field name invalid");
+        }
 
-		private void InvalidTokenThrow()
-		{
-			ThrowException("Invalid token parsing");
-		}
+        private void InvalidTokenThrow()
+        {
+            ThrowException("Invalid token parsing");
+        }
 
-		private void InvalidExpressionThrow()
-		{
-			ThrowException("Expression not valid", "Expression Error");
-		}
+        private void InvalidExpressionThrow()
+        {
+            ThrowException("Expression not valid", "Expression Error");
+        }
 
         private void InvalidMethodInvokeThrow(string parsedToken)
         {
@@ -567,15 +648,16 @@ namespace Yippy
             ThrowException("Invalid value argument");
         }
 
-		private void UpdateParsePriority()
-		{
-			if (_parsePriority + 1 < ParsePriorityMax)
-			{
-				_parsePriority++;
-				_parserLine = 0;
-			} else
-				_compilingComplete = true;
-		}
+        private void UpdateParsePriority()
+        {
+            if (_parsePriority + 1 < ParsePriorityMax)
+            {
+                _parsePriority++;
+                _parserLine = 0;
+            }
+            else
+                _compilingComplete = true;
+        }
 
         private void ParseAttach(string data)
         {
@@ -589,32 +671,6 @@ namespace Yippy
             }
             if (parsedToken != YIPPY_ATTACH)
                 return;
-            for (int i = parsedToken.Length; data[i] != ';'; i++)
-            {
-                if (data[i] != ' ')
-                    parsedName += data[i];
-            }
-            if (CompilerUtil.IsStringIncorrect(parsedName))
-            {
-                ThrowException("Invalid library name", "Library Package");
-                return;
-            }
-            AddLibrary(parsedName);
-        }
-
-		private void ParseVariables(string data)
-		{
-			string parsedToken = string.Empty;
-			string parsedType = string.Empty;
-			string parsedName = string.Empty;
-
-			for (int i = 0; i < data.Length; i++)
-			{
-				if (parsedToken != YIPPY_POOL)
-					parsedToken += data[i];
-			}
-			if (parsedToken != YIPPY_POOL)
-				return;
 
             int semicolonPosition = -4000;
             for (int i = 0; i < data.Length; i++)
@@ -626,42 +682,85 @@ namespace Yippy
                 return;
             }
 
-			for (int i = parsedToken.Length + 1; data[i] != ';'; i++)
-			{
-				if (data[i] != ' ')
-					parsedType += data[i];
-				else
-					break;
-			}
+            for (int i = parsedToken.Length; i < semicolonPosition; i++)
+            {
+                if (data[i] != ' ')
+                    parsedName += data[i];
+            }
+            if (CompilerUtil.IsStringIncorrect(parsedName))
+            {
+                ThrowException("Invalid package name", "PackageManager");
+                return;
+            }
+            _packageManager.Add(parsedName);
+        }
 
-			if (!CompilerUtil.HasExistingType(parsedType))
-			{
-				ValueTypeExceptionThrow();
-				return;
-			}
+        private void ParseVariables(string data)
+        {
+            string parsedToken = string.Empty;
+            string parsedType = string.Empty;
+            string parsedName = string.Empty;
 
-			for (int i = parsedToken.Length + parsedType.Length + 2; i < semicolonPosition; i++)
-				parsedName += data[i];
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (parsedToken != YIPPY_POOL)
+                    parsedToken += data[i];
+            }
+            if (parsedToken != YIPPY_POOL)
+                return;
 
-			Field field = new Field(parsedName, parsedType, string.Empty);
-			_scriptFields.Add(field.Name, field);
-		}
+            int semicolonPosition = -4000;
+            for (int i = 0; i < data.Length; i++)
+                if (data[i] == ';')
+                    semicolonPosition = i;
+            if (semicolonPosition == -4000)
+            {
+                MissedSemicolonThrow();
+                return;
+            }
+
+            for (int i = parsedToken.Length + 1; data[i] != ';'; i++)
+            {
+                if (data[i] != ' ')
+                    parsedType += data[i];
+                else
+                    break;
+            }
+
+            if (!CompilerUtil.HasExistingType(parsedType))
+            {
+                ValueTypeExceptionThrow();
+                return;
+            }
+
+            for (int i = parsedToken.Length + parsedType.Length + 2; i < semicolonPosition; i++)
+                parsedName += data[i];
+
+            Field field = new Field(parsedName, parsedType, string.Empty);
+            _scriptFields.Add(field.Name, field);
+        }
 
         private void MissedSemicolonThrow()
         {
             ThrowException("Semicolon missed", "Syntax Exception");
         }
 
-		private void ValueTypeExceptionThrow()
-		{
-			ThrowException("Used non existing value type", "Type Casting");
-		}
+        private void ValueTypeExceptionThrow()
+        {
+            ThrowException("Used non existing value type", "Type Casting");
+        }
 
-		internal Field GetField(string name)
-		{
-			Field field = default(Field);
-			_scriptFields.TryGetValue(name, out field);
-			return field;
-		}
-	}
+        internal Field GetField(string name)
+        {
+            Field field = default(Field);
+            _scriptFields.TryGetValue(name, out field);
+            return field;
+        }
+        internal Method GetMethod(string name)
+        {
+            Method method = default(Method);
+            _scriptMethods.TryGetValue(name, out method);
+            return method;
+        }
+    }
 }

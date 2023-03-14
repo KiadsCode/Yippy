@@ -1,2 +1,13 @@
 ﻿@attach System;
-log("Hello, World!\n");
+
+pool int kol;
+set kol = 7;
+
+void printKol()
+{
+	logln(kol)
+}
+printKol()
+printKol()
+printKol()
+printKol()

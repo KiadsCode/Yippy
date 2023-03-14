@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Yippy
 {
@@ -15,6 +12,21 @@ namespace Yippy
         public static bool IsBooleanValue(string value)
         {
             return value == Compiler.YIPPY_TRUE || value == Compiler.YIPPY_FALSE;
+        }
+
+        public static string RemoveTabs(string value)
+        {
+            string result = string.Empty;
+            int normalStringStarted = -440;
+            for (int i = 0; i < value.Length; i++)
+                if (value[i] != ' ' && value[i] != '\t' && normalStringStarted == -440)
+                {
+                    normalStringStarted = i;
+                    break;
+                }
+            for (int i = normalStringStarted; i < value.Length; i++)
+                result += value[i];
+            return result;
         }
 
         public static bool IsNumber(char value)

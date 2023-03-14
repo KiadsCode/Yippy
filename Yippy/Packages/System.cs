@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Yippy.Libs
+namespace Yippy.Packages
 {
-    internal class System : Library
+    internal class System : Package
     {
         public const string YIPPY_PRINT = "log";
         public const string YIPPY_PRINTLN = "logln";
@@ -28,7 +28,7 @@ namespace Yippy.Libs
             if (oneArgumentMethods.Length != oneArgumentMethodsActions.Length
                 || twoArgumentsMethods.Length != twoArgumentMethodsActions.Length)
             {
-                Compiler.ThrowException("System library has occured an error", "Library Package");
+                Compiler.ThrowException("System library has occured an error", "Package Package");
                 return;
             }
             for (int i = 0; i < oneArgumentMethods.Length; i++)

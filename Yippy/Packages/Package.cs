@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Yippy.Libs
+namespace Yippy.Packages
 {
-    public class Library
+    public class Package
     {
         private Compiler _compiler;
         public Compiler Compiler
@@ -19,14 +19,11 @@ namespace Yippy.Libs
                 _compiler = value;
             }
         }
-        public Library(Compiler compiler)
+        public Package(Compiler compiler)
         {
             _compiler = compiler;
         }
-        public virtual void ParseMethods(string data)
-        {}
-        public virtual void Initialize()
-        {
-        }
+        public virtual void ParseMethods(string data){}
+        public virtual void Initialize(){}
     }
 }

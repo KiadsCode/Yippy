@@ -7,9 +7,8 @@ namespace Yippy
         private string _fieldType = string.Empty;
         private string _fieldValue = string.Empty;
         private string _fieldName = string.Empty;
-        private bool _fieldConstant = false;
 
-        public Field(string name, string type, string value = "", bool constant = false)
+        public Field(string name, string type, string value = "")
         {
             Name = name;
             Type = type;
@@ -31,7 +30,6 @@ namespace Yippy
                 }
             }
             Value = value;
-            Constant = constant;
         }
 
         public object GetValue()
@@ -88,17 +86,6 @@ namespace Yippy
             set
             {
                 _fieldValue = value;
-            }
-        }
-        public bool Constant
-        {
-            get
-            {
-                return _fieldConstant;
-            }
-            private set
-            {
-                _fieldConstant = value;
             }
         }
     }
