@@ -16,6 +16,8 @@ namespace Yippy.Packages
         public System(Compiler compiler)
             : base(compiler)
         {
+            Attachable = true;
+            Name = "System";
         }
 
         public override void ParseMethods(string data)
@@ -28,7 +30,7 @@ namespace Yippy.Packages
             if (oneArgumentMethods.Length != oneArgumentMethodsActions.Length
                 || twoArgumentsMethods.Length != twoArgumentMethodsActions.Length)
             {
-                Compiler.ThrowException("System library has occured an error", "Package Package");
+                Compiler.ThrowException("System library has occured an error", "PackageManager");
                 return;
             }
             for (int i = 0; i < oneArgumentMethods.Length; i++)

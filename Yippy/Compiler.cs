@@ -85,9 +85,10 @@ namespace Yippy
             }
         }
 
-        public void AddCustomPackage(string packageName, Package package)
+        public void AddCustomPackage(Package package)
         {
-            _packageManager.AddCustomPackage(packageName, package);
+            if (package.Attachable)
+                _packageManager.AddCustomPackage(package.Name, package);
         }
 
         public string[] FileData

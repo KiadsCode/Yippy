@@ -6,12 +6,12 @@ using Yippy.Packages;
 
 namespace Yippy
 {
-    public class PackageManager : IDisposable
+    public struct PackageManager : IDisposable
     {
         private Dictionary<string, Package> _packages;
         private Dictionary<string, Packages.Package> _availablePackages;
         private Compiler _compiler;
-        private bool _disposed = false;
+        private bool _disposed;
 
         internal void UpdateCompiler(Compiler compiler)
         {
@@ -27,6 +27,8 @@ namespace Yippy
         {
             _packages = new Dictionary<string, Packages.Package>();
             _availablePackages = new Dictionary<string, Packages.Package>();
+            _compiler = compiler;
+            _disposed = false;
         }
 
         public void ParsePackages(string data)
